@@ -3,19 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test CRUD GOAD</title>
+    <title>GOAD API Dashboard</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <h1>Testing API CRUDs</h1>
-        <nav>
-            <button onclick="showSection('auth')">Usuarios / Auth</button>
-            <button onclick="showSection('anuncios')">Anuncios Generales</button>
-            <button onclick="showSection('vehiculos')">Vehículos</button>
-            <button onclick="showSection('imagenes')">Imágenes</button>
+        <h1>GOAD API Dashboard</h1>
+        <nav id="main-nav">
+            <button onclick="showSection('docs', this)">Documentación</button>
+            <button onclick="showSection('auth', this)" class="active-tab">Usuarios / Auth</button>
+            <button onclick="showSection('anuncios', this)">Anuncios Generales</button>
+            <button onclick="showSection('vehiculos', this)">Vehículos</button>
+            <button onclick="showSection('imagenes', this)">Imágenes</button>
         </nav>
     </header>
+
+    <main id="app">
+        <!-- Section Documentación -->
+        <section id="docs" class="section">
+            <h2>Documentación de la API</h2>
+            <div class="card docs-content">
+                <p>Bienvenido a la documentación oficial de la API de GOAD. A continuación encontrarás el detalle de los endpoints disponibles, los métodos soportados, y el formato de los datos que debes enviar.</p>
+
+                <h4 style="margin-top:2rem;">Autenticación y Usuarios</h4>
+                
+                <div class="docs-endpoint">
+                    <span class="method-badge method-post">POST</span>
+                    <span class="endpoint-url">/api/usuarios</span>
+                    <p>Registra un nuevo usuario en el sistema. Las contraseñas se guardan encriptadas con bcrypt.</p>
+                    <strong>Cuerpo (JSON):</strong>
+                    <table>
+                        <tr><th>Campo</th><th>Tipo</th><th>Descripción</th></tr>
+                        <tr><td><code>dni</code></td><td>String (15)</td><td>Documento de identidad único (Requerido)</td></tr>
+                        <tr><td><code>nombres</code></td><td>String</td><td>Nombres del usuario (Requerido)</td></tr>
+                        <tr><td><code>apellido_paterno</code></td><td>String</td><td>Apellido paterno (Requerido)</td></tr>
+                        <tr><td><code>email</code></td><td>String</td><td>Correo electrónico único (Requerido)</td></tr>
+                        <tr><td><code>passw</code></td><td>String</td><td>Contraseña en texto plano (Requerido)</td></tr>
+                        <tr><td><code>rol</code></td><td>String</td><td>Debe ser <code>admin</code> o <code>cliente</code> (Requerido)</td></tr>
+                    </table>
+                </div>
+
+                <div class="docs-endpoint">
+                    <span class="method-badge method-post">POST</span>
+                    <span class="endpoint-url">/api/auth/login</span>
+                    <p>Autentica a un usuario y devuelve un token JWT.</p>
+                    <strong>Cuerpo (JSON):</strong>
+<pre><code>{
+  "email": "correo@ejemplo.com",
+  "passw": "micontrasena123"
+}</code></pre>
+                    <strong style="display:block; margin-top:10px;">Respuesta (200 OK):</strong>
+<pre><code>{
+  "token": "eyJhbGciOiJIUzI1NiIs...",
+  "user": { "id": 1, "nombres": "Juan", "email": "..." }
+}</code></pre>
+                </div>
+
+                <h4 style="margin-top:2rem;">Anuncios Base</h4>
+
+                <div class="docs-endpoint">
+                    <span class="method-badge method-get">GET</span>
+                    <span class="endpoint-url">/api/anuncios</span>
+                    <p>Devuelve todos los anuncios activos (que no están eliminados lógicamente), cruzando datos con el autor y la categoría.</p>
+                </div>
+
+                <div class="docs-endpoint">
+                    <span class="method-badge method-post">POST</span>
+                    <span class="endpoint-url">/api/anuncios</span>
+                    <p>Crea un anuncio básico sin atributos específicos de vehículos ni inmuebles.</p>
+                    <strong>Cuerpo (JSON):</strong>
+                    <table>
+                        <tr><th>Campo</th><th>Tipo</th><th>Descripción</th></tr>
+                        <tr><td><code>titulo</code></td><td>String</td><td>Título descriptivo (Requerido)</td></tr>
+                        <tr><td><code>descripcion</code></td><td>String</td><td>Texto descriptivo (Requerido)</td></tr>
+                        <tr><td><code>latitud</code></td><td>Number</td><td>Ej. -12.043180 (Opcional, máx 2 dígitos enteros)</td></tr>
+                        <tr><td><code>longitud</code></td><td>Number</td><td>Ej. -77.028240 (Opcional, máx 3 dígitos enteros)</td></tr>
+                        <tr><td><code>numero_telefono</code></td><td>String</td><td>(Opcional)</td></tr>
+                        <tr><td><code>id_usuario</code></td><td>Integer</td><td>ID del autor (Requerido)</td></tr>
+                        <tr><td><code>id_categoria</code></td><td>Integer</td><td>ID de la categoría general (Requerido)</td></tr>
+                    </table>
+                </div>
+
+                <h4 style="margin-top:2rem;">Vehículos (Anuncios Compuestos)</h4>
+
+                <div class="docs-endpoint">
+                    <span class="method-badge method-post">POST</span>
+                    <span class="endpoint-url">/api/vehiculos</span>
+                    <p>Crea internamente un Anuncio Base, detecta la categoría y en la misma transacción inserta los detalles técnicos del vehículo.</p>
+                    <strong>Cuerpo (JSON):</strong>
+                    <p>Se envía un solo JSON mezclando la data del anuncio y del vehículo:</p>
+<pre><code>{
+  "titulo": "Vendo Mazda 3",
+  "descripcion": "Excelente estado",
+  "id_usuario": 1,
+  "id_categoria": 2,
+
+  "precio": 14500.50,
+  "marca": "Mazda",
+  "modelo": "3",
+  "anio": 2021,
+  "kilometraje": 45000,
+  "combustible": "Gasolina",
+  "airbag": true,
+  "aire": true,
+  "sunroof": false
+}</code></pre>
+                </div>
+
+                <h4 style="margin-top:2rem;">Imágenes de Anuncios</h4>
+
+                <div class="docs-endpoint">
+                    <span class="method-badge method-post">POST</span>
+                    <span class="endpoint-url">/api/anuncios/:id/imagenes</span>
+                    <p>Sube una imagen física al disco <code>D:/imagenes</code> usando Multer y vincula su ruta relativa en la base de datos.</p>
+                    <strong>Formato: <code>multipart/form-data</code></strong>
+                    <table>
+                        <tr><th>Key</th><th>Valor</th></tr>
+                        <tr><td><code>imagen</code></td><td>Archivo físico (.jpg, .png, .webp)</td></tr>
+                    </table>
+                </div>
+
+                <div class="docs-endpoint">
+                    <span class="method-badge method-get">GET</span>
+                    <span class="endpoint-url">/api/anuncios/:id/imagenes</span>
+                    <p>Obtiene un array de objetos con las URLs estáticas de las fotos de un anuncio.</p>
+                </div>
+            </div>
+        </section>
 
     <main id="app">
         <!-- Section Auth / Usuarios -->
@@ -58,14 +172,18 @@
             <div class="card form-card">
                 <h3>Crear Anuncio</h3>
                 <form id="form-anuncio">
-                    <input type="text" id="a-titulo" placeholder="Título" required>
+                    <div class="grid-2">
+                        <input type="text" id="a-titulo" placeholder="Título" required>
+                        <input type="text" id="a-telefono" placeholder="Teléfono">
+                    </div>
                     <textarea id="a-descripcion" placeholder="Descripción" required></textarea>
-                    <input type="number" step="any" id="a-latitud" placeholder="Latitud">
-                    <input type="number" step="any" id="a-longitud" placeholder="Longitud">
-                    <input type="text" id="a-telefono" placeholder="Teléfono">
-                    <input type="number" id="a-usuario" placeholder="ID Usuario" required>
-                    <input type="number" id="a-categoria" placeholder="ID Categoría" required>
-                    <button type="submit">Crear Anuncio</button>
+                    <div class="grid-2">
+                        <input type="number" step="any" id="a-latitud" placeholder="Latitud (-12.04)">
+                        <input type="number" step="any" id="a-longitud" placeholder="Longitud (-77.02)">
+                        <input type="number" id="a-usuario" placeholder="ID Usuario" required>
+                        <input type="number" id="a-categoria" placeholder="ID Categoría" required>
+                    </div>
+                    <button type="submit">Crear Anuncio Base</button>
                 </form>
             </div>
 
@@ -82,17 +200,21 @@
             <div class="card form-card">
                 <h3>Crear Vehículo</h3>
                 <form id="form-vehiculo">
-                    <h4>Datos del Anuncio Base</h4>
-                    <input type="text" id="v-titulo" placeholder="Título" required>
-                    <textarea id="v-descripcion" placeholder="Descripción" required></textarea>
-                    <input type="number" step="any" id="v-latitud" placeholder="Latitud">
-                    <input type="number" step="any" id="v-longitud" placeholder="Longitud">
-                    <input type="text" id="v-telefono" placeholder="Teléfono">
-                    <input type="number" id="v-usuario" placeholder="ID Usuario" required>
-                    <input type="number" id="v-categoria" placeholder="ID Categoría (debe ser Vehículo)" required>
+                    <h4>1. Datos del Anuncio Base</h4>
+                    <div class="grid-2">
+                        <input type="text" id="v-titulo" placeholder="Título del anuncio" required>
+                        <input type="text" id="v-telefono" placeholder="Teléfono contacto">
+                    </div>
+                    <textarea id="v-descripcion" placeholder="Descripción atractiva..." required></textarea>
+                    <div class="grid-2">
+                        <input type="number" step="any" id="v-latitud" placeholder="Latitud (-12.043)">
+                        <input type="number" step="any" id="v-longitud" placeholder="Longitud (-77.028)">
+                        <input type="number" id="v-usuario" placeholder="Tu ID de Usuario" required>
+                        <input type="number" id="v-categoria" placeholder="ID Cat. Vehículos" required>
+                    </div>
                     
-                    <h4>Datos Específicos del Vehículo</h4>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <h4>2. Especificaciones Técnicas</h4>
+                    <div class="grid-3">
                         <input type="number" step="0.01" id="v-precio" placeholder="Precio">
                         <input type="text" id="v-marca" placeholder="Marca">
                         <input type="text" id="v-modelo" placeholder="Modelo">
@@ -107,8 +229,8 @@
                         <input type="text" id="v-estado" placeholder="Estado (Nuevo, Usado)">
                     </div>
 
-                    <h4>Equipamiento</h4>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; font-size: 14px;">
+                    <h4>3. Equipamiento Adicional</h4>
+                    <div class="grid-3">
                         <label><input type="checkbox" id="v-retrovisores"> Retrovisores Eléctricos</label>
                         <label><input type="checkbox" id="v-neblineros"> Neblineros</label>
                         <label><input type="checkbox" id="v-aire"> Aire Acondicionado</label>
@@ -122,8 +244,8 @@
                         <label><input type="checkbox" id="v-luces-alogenas"> Luces Alógenas</label>
                     </div>
 
-                    <h4>Seguridad y Extras</h4>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; font-size: 14px;">
+                    <h4>4. Seguridad y Extras</h4>
+                    <div class="grid-3">
                         <label><input type="checkbox" id="v-gps"> Localizador GPS</label>
                         <label><input type="checkbox" id="v-airbag"> Airbag</label>
                         <label><input type="checkbox" id="v-laminas"> Láminas Seguridad</label>

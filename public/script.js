@@ -1,13 +1,18 @@
 const API_URL = '/api';
 
 // Navigation
-function showSection(sectionId) {
+function showSection(sectionId, btn) {
+    // Esconder todas las secciones
     document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+    // Quitar active-tab de todos los botones
+    document.querySelectorAll('#main-nav button').forEach(b => b.classList.remove('active-tab'));
+    
+    // Mostrar sección actual y activar botón
     document.getElementById(sectionId).classList.add('active');
+    if (btn) btn.classList.add('active-tab');
 
     if (sectionId === 'anuncios') loadAnuncios();
     if (sectionId === 'vehiculos') loadVehiculos();
-    // imagenes no necesita auto-carga general porque depende de un ID de anuncio
 }
 
 // =======================
@@ -364,5 +369,5 @@ document.getElementById('form-imagen-view').addEventListener('submit', async (e)
 
 // Inicializar al cargar
 window.onload = () => {
-    showSection('auth');
+    // Comenzar en Auth por defecto ya está seleccionado por el HTML inicial (clase en btn)
 };
