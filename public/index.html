@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test CRUD GOAD</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Testing API CRUDs</h1>
+        <nav>
+            <button onclick="showSection('auth')">Usuarios / Auth</button>
+            <button onclick="showSection('anuncios')">Anuncios Generales</button>
+            <button onclick="showSection('vehiculos')">Vehículos</button>
+            <button onclick="showSection('imagenes')">Imágenes</button>
+        </nav>
+    </header>
+
+    <main id="app">
+        <!-- Section Auth / Usuarios -->
+        <section id="auth" class="section active">
+            <h2>Gestión de Usuarios y Autenticación</h2>
+            
+            <div class="card form-card">
+                <h3>Crear Usuario (Registro)</h3>
+                <form id="form-usuario">
+                    <input type="text" id="u-dni" placeholder="DNI" required>
+                    <input type="text" id="u-nombres" placeholder="Nombres" required>
+                    <input type="text" id="u-ape-pat" placeholder="Apellido Paterno" required>
+                    <input type="text" id="u-ape-mat" placeholder="Apellido Materno">
+                    <input type="text" id="u-celular" placeholder="Celular">
+                    <input type="email" id="u-email" placeholder="Correo Electrónico" required>
+                    <input type="password" id="u-passw" placeholder="Contraseña" required>
+                    <select id="u-rol" required>
+                        <option value="cliente">Cliente</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                    <button type="submit">Registrar Usuario</button>
+                </form>
+            </div>
+
+            <div class="card form-card">
+                <h3>Iniciar Sesión (Login)</h3>
+                <form id="form-login">
+                    <input type="email" id="l-email" placeholder="Correo Electrónico" required>
+                    <input type="password" id="l-passw" placeholder="Contraseña" required>
+                    <button type="submit">Iniciar Sesión</button>
+                </form>
+                <div id="login-result" style="margin-top: 10px; font-weight: bold; color: green;"></div>
+            </div>
+        </section>
+
+        <!-- Section Anuncios -->
+        <section id="anuncios" class="section">
+            <h2>Gestión de Anuncios Generales</h2>
+            
+            <div class="card form-card">
+                <h3>Crear Anuncio</h3>
+                <form id="form-anuncio">
+                    <input type="text" id="a-titulo" placeholder="Título" required>
+                    <textarea id="a-descripcion" placeholder="Descripción" required></textarea>
+                    <input type="number" step="any" id="a-latitud" placeholder="Latitud">
+                    <input type="number" step="any" id="a-longitud" placeholder="Longitud">
+                    <input type="text" id="a-telefono" placeholder="Teléfono">
+                    <input type="number" id="a-usuario" placeholder="ID Usuario" required>
+                    <input type="number" id="a-categoria" placeholder="ID Categoría" required>
+                    <button type="submit">Crear Anuncio</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h3>Lista de Anuncios <button onclick="loadAnuncios()" class="refresh-btn">Recargar</button></h3>
+                <div id="list-anuncios" class="list"></div>
+            </div>
+        </section>
+
+        <!-- Section Vehiculos -->
+        <section id="vehiculos" class="section">
+            <h2>Gestión de Vehículos</h2>
+            
+            <div class="card form-card">
+                <h3>Crear Vehículo</h3>
+                <form id="form-vehiculo">
+                    <h4>Datos del Anuncio Base</h4>
+                    <input type="text" id="v-titulo" placeholder="Título" required>
+                    <textarea id="v-descripcion" placeholder="Descripción" required></textarea>
+                    <input type="number" step="any" id="v-latitud" placeholder="Latitud">
+                    <input type="number" step="any" id="v-longitud" placeholder="Longitud">
+                    <input type="text" id="v-telefono" placeholder="Teléfono">
+                    <input type="number" id="v-usuario" placeholder="ID Usuario" required>
+                    <input type="number" id="v-categoria" placeholder="ID Categoría (debe ser Vehículo)" required>
+                    
+                    <h4>Datos Específicos del Vehículo</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <input type="number" step="0.01" id="v-precio" placeholder="Precio">
+                        <input type="text" id="v-marca" placeholder="Marca">
+                        <input type="text" id="v-modelo" placeholder="Modelo">
+                        <input type="number" id="v-anio" placeholder="Año">
+                        <input type="text" id="v-categoria-vehiculo" placeholder="Categoría (SUV, Sedan, etc)">
+                        <input type="text" id="v-combustible" placeholder="Combustible">
+                        <input type="number" id="v-puertas" placeholder="Puertas">
+                        <input type="text" id="v-traccion" placeholder="Tracción">
+                        <input type="text" id="v-color" placeholder="Color">
+                        <input type="text" id="v-cilindrada" placeholder="Cilindrada">
+                        <input type="number" id="v-kilometraje" placeholder="Kilometraje">
+                        <input type="text" id="v-estado" placeholder="Estado (Nuevo, Usado)">
+                    </div>
+
+                    <h4>Equipamiento</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; font-size: 14px;">
+                        <label><input type="checkbox" id="v-retrovisores"> Retrovisores Eléctricos</label>
+                        <label><input type="checkbox" id="v-neblineros"> Neblineros</label>
+                        <label><input type="checkbox" id="v-aire"> Aire Acondicionado</label>
+                        <label><input type="checkbox" id="v-full-equipo"> Full Equipo</label>
+                        <label><input type="checkbox" id="v-parlantes"> Parlantes</label>
+                        <label><input type="checkbox" id="v-radio-cd"> Radio CD</label>
+                        <label><input type="checkbox" id="v-radio-mp3"> Radio MP3</label>
+                        <label><input type="checkbox" id="v-aros"> Aros</label>
+                        <label><input type="checkbox" id="v-aros-aleacion"> Aros Aleación</label>
+                        <label><input type="checkbox" id="v-parrilla"> Parrilla</label>
+                        <label><input type="checkbox" id="v-luces-alogenas"> Luces Alógenas</label>
+                    </div>
+
+                    <h4>Seguridad y Extras</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; font-size: 14px;">
+                        <label><input type="checkbox" id="v-gps"> Localizador GPS</label>
+                        <label><input type="checkbox" id="v-airbag"> Airbag</label>
+                        <label><input type="checkbox" id="v-laminas"> Láminas Seguridad</label>
+                        <label><input type="checkbox" id="v-blindado"> Blindado</label>
+                        <label><input type="checkbox" id="v-faros-traseros"> Faros Antiniebla Tras.</label>
+                        <label><input type="checkbox" id="v-faros-delanteros"> Faros Antiniebla Del.</label>
+                        <label><input type="checkbox" id="v-inmovilizador"> Inmovilizador Motor</label>
+                        <label><input type="checkbox" id="v-repartidor-frenado"> Repartidor Elect. Frenado</label>
+                        <label><input type="checkbox" id="v-frenos-abs"> Frenos ABS</label>
+                        <label><input type="checkbox" id="v-alarma"> Alarma</label>
+                        <label><input type="checkbox" id="v-sunroof"> Sunroof</label>
+                        <label><input type="checkbox" id="v-asientos-cuero"> Asientos Cuero</label>
+                        <label><input type="checkbox" id="v-climatizador"> Climatizador</label>
+                    </div>
+                    
+                    <button type="submit" style="margin-top: 15px;">Crear Vehículo</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h3>Lista de Vehículos <button onclick="loadVehiculos()" class="refresh-btn">Recargar</button></h3>
+                <div id="list-vehiculos" class="list"></div>
+            </div>
+        </section>
+
+        <!-- Section Imágenes -->
+        <section id="imagenes" class="section">
+            <h2>Gestión de Imágenes</h2>
+            
+            <div class="card form-card">
+                <h3>Subir Imagen a un Anuncio</h3>
+                <form id="form-imagen-upload">
+                    <input type="number" id="img-id-anuncio" placeholder="ID del Anuncio" required>
+                    <input type="file" id="img-file" accept="image/*" required>
+                    <button type="submit">Subir Imagen</button>
+                </form>
+                <div id="upload-result" style="margin-top: 10px; font-weight: bold; color: green;"></div>
+            </div>
+
+            <div class="card form-card">
+                <h3>Ver Imágenes de un Anuncio</h3>
+                <form id="form-imagen-view">
+                    <input type="number" id="view-id-anuncio" placeholder="ID del Anuncio" required>
+                    <button type="submit">Cargar Imágenes</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h3>Galería</h3>
+                <div id="gallery" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px;">
+                    <p style="grid-column: 1 / -1;">Busca un ID de anuncio para ver sus imágenes.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
