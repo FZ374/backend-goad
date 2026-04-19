@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GOAD API Dashboard</title>
+    <title>ZONA PRUEBAS API</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <header>
-        <h1>GOAD API Dashboard</h1>
+        <h1>ZONA PRUEBAS API</h1>
         <nav id="main-nav">
             <button onclick="showSection('docs', this)">Documentación</button>
             <button onclick="showSection('auth', this)" class="active-tab">Usuarios / Auth</button>
@@ -23,23 +25,52 @@
         <section id="docs" class="section">
             <h2>Documentación de la API</h2>
             <div class="card docs-content">
-                <p>Bienvenido a la documentación oficial de la API de GOAD. A continuación encontrarás el detalle de los endpoints disponibles, los métodos soportados, y el formato de los datos que debes enviar.</p>
+                <p>Bienvenido a la documentación oficial de la API de GOAD. A continuación encontrarás el detalle de los
+                    endpoints disponibles, los métodos soportados, y el formato de los datos que debes enviar.</p>
 
                 <h4 style="margin-top:2rem;">Autenticación y Usuarios</h4>
-                
+
                 <div class="docs-endpoint">
                     <span class="method-badge method-post">POST</span>
                     <span class="endpoint-url">/api/usuarios</span>
                     <p>Registra un nuevo usuario en el sistema. Las contraseñas se guardan encriptadas con bcrypt.</p>
                     <strong>Cuerpo (JSON):</strong>
                     <table>
-                        <tr><th>Campo</th><th>Tipo</th><th>Descripción</th></tr>
-                        <tr><td><code>dni</code></td><td>String (15)</td><td>Documento de identidad único (Requerido)</td></tr>
-                        <tr><td><code>nombres</code></td><td>String</td><td>Nombres del usuario (Requerido)</td></tr>
-                        <tr><td><code>apellido_paterno</code></td><td>String</td><td>Apellido paterno (Requerido)</td></tr>
-                        <tr><td><code>email</code></td><td>String</td><td>Correo electrónico único (Requerido)</td></tr>
-                        <tr><td><code>passw</code></td><td>String</td><td>Contraseña en texto plano (Requerido)</td></tr>
-                        <tr><td><code>rol</code></td><td>String</td><td>Debe ser <code>admin</code> o <code>cliente</code> (Requerido)</td></tr>
+                        <tr>
+                            <th>Campo</th>
+                            <th>Tipo</th>
+                            <th>Descripción</th>
+                        </tr>
+                        <tr>
+                            <td><code>dni</code></td>
+                            <td>String (15)</td>
+                            <td>Documento de identidad único (Requerido)</td>
+                        </tr>
+                        <tr>
+                            <td><code>nombres</code></td>
+                            <td>String</td>
+                            <td>Nombres del usuario (Requerido)</td>
+                        </tr>
+                        <tr>
+                            <td><code>apellido_paterno</code></td>
+                            <td>String</td>
+                            <td>Apellido paterno (Requerido)</td>
+                        </tr>
+                        <tr>
+                            <td><code>email</code></td>
+                            <td>String</td>
+                            <td>Correo electrónico único (Requerido)</td>
+                        </tr>
+                        <tr>
+                            <td><code>passw</code></td>
+                            <td>String</td>
+                            <td>Contraseña en texto plano (Requerido)</td>
+                        </tr>
+                        <tr>
+                            <td><code>rol</code></td>
+                            <td>String</td>
+                            <td>Debe ser <code>admin</code> o <code>cliente</code> (Requerido)</td>
+                        </tr>
                     </table>
                 </div>
 
@@ -48,15 +79,19 @@
                     <span class="endpoint-url">/api/auth/login</span>
                     <p>Autentica a un usuario y devuelve un token JWT.</p>
                     <strong>Cuerpo (JSON):</strong>
-<pre><code>{
+                    <pre><code>{
   "email": "correo@ejemplo.com",
   "passw": "micontrasena123"
 }</code></pre>
                     <strong style="display:block; margin-top:10px;">Respuesta (200 OK):</strong>
-<pre><code>{
+                    <pre><code>{
   "token": "eyJhbGciOiJIUzI1NiIs...",
   "user": { "id": 1, "nombres": "Juan", "email": "..." }
 }</code></pre>
+                    <div style="margin-top: 15px; padding: 10px; background: rgba(56, 189, 248, 0.1); border-left: 4px solid #38bdf8; border-radius: 4px;">
+                        <strong>Uso del Token:</strong> Para hacer peticiones protegidas (ej. crear anuncios), debes enviar este token en los Headers de tu petición HTTP:
+                        <br><code>Authorization: Bearer [TU_TOKEN]</code>
+                    </div>
                 </div>
 
                 <h4 style="margin-top:2rem;">Anuncios Base</h4>
@@ -64,7 +99,8 @@
                 <div class="docs-endpoint">
                     <span class="method-badge method-get">GET</span>
                     <span class="endpoint-url">/api/anuncios</span>
-                    <p>Devuelve todos los anuncios activos (que no están eliminados lógicamente), cruzando datos con el autor y la categoría.</p>
+                    <p>Devuelve todos los anuncios activos (que no están eliminados lógicamente), cruzando datos con el
+                        autor y la categoría.</p>
                 </div>
 
                 <div class="docs-endpoint">
@@ -73,14 +109,46 @@
                     <p>Crea un anuncio básico sin atributos específicos de vehículos ni inmuebles.</p>
                     <strong>Cuerpo (JSON):</strong>
                     <table>
-                        <tr><th>Campo</th><th>Tipo</th><th>Descripción</th></tr>
-                        <tr><td><code>titulo</code></td><td>String</td><td>Título descriptivo (Requerido)</td></tr>
-                        <tr><td><code>descripcion</code></td><td>String</td><td>Texto descriptivo (Requerido)</td></tr>
-                        <tr><td><code>latitud</code></td><td>Number</td><td>Ej. -12.043180 (Opcional, máx 2 dígitos enteros)</td></tr>
-                        <tr><td><code>longitud</code></td><td>Number</td><td>Ej. -77.028240 (Opcional, máx 3 dígitos enteros)</td></tr>
-                        <tr><td><code>numero_telefono</code></td><td>String</td><td>(Opcional)</td></tr>
-                        <tr><td><code>id_usuario</code></td><td>Integer</td><td>ID del autor (Requerido)</td></tr>
-                        <tr><td><code>id_categoria</code></td><td>Integer</td><td>ID de la categoría general (Requerido)</td></tr>
+                        <tr>
+                            <th>Campo</th>
+                            <th>Tipo</th>
+                            <th>Descripción</th>
+                        </tr>
+                        <tr>
+                            <td><code>titulo</code></td>
+                            <td>String</td>
+                            <td>Título descriptivo (Requerido)</td>
+                        </tr>
+                        <tr>
+                            <td><code>descripcion</code></td>
+                            <td>String</td>
+                            <td>Texto descriptivo (Requerido)</td>
+                        </tr>
+                        <tr>
+                            <td><code>latitud</code></td>
+                            <td>Number</td>
+                            <td>Ej. -12.043180 (Opcional, máx 2 dígitos enteros)</td>
+                        </tr>
+                        <tr>
+                            <td><code>longitud</code></td>
+                            <td>Number</td>
+                            <td>Ej. -77.028240 (Opcional, máx 3 dígitos enteros)</td>
+                        </tr>
+                        <tr>
+                            <td><code>numero_telefono</code></td>
+                            <td>String</td>
+                            <td>(Opcional)</td>
+                        </tr>
+                        <tr>
+                            <td><code>id_usuario</code></td>
+                            <td>Integer</td>
+                            <td>ID del autor (Requerido)</td>
+                        </tr>
+                        <tr>
+                            <td><code>id_categoria</code></td>
+                            <td>Integer</td>
+                            <td>ID de la categoría general (Requerido)</td>
+                        </tr>
                     </table>
                 </div>
 
@@ -89,10 +157,11 @@
                 <div class="docs-endpoint">
                     <span class="method-badge method-post">POST</span>
                     <span class="endpoint-url">/api/vehiculos</span>
-                    <p>Crea internamente un Anuncio Base, detecta la categoría y en la misma transacción inserta los detalles técnicos del vehículo.</p>
+                    <p>Crea internamente un Anuncio Base, detecta la categoría y en la misma transacción inserta los
+                        detalles técnicos del vehículo.</p>
                     <strong>Cuerpo (JSON):</strong>
                     <p>Se envía un solo JSON mezclando la data del anuncio y del vehículo:</p>
-<pre><code>{
+                    <pre><code>{
   "titulo": "Vendo Mazda 3",
   "descripcion": "Excelente estado",
   "id_usuario": 1,
@@ -115,11 +184,18 @@
                 <div class="docs-endpoint">
                     <span class="method-badge method-post">POST</span>
                     <span class="endpoint-url">/api/anuncios/:id/imagenes</span>
-                    <p>Sube una imagen física al disco <code>D:/imagenes</code> usando Multer y vincula su ruta relativa en la base de datos.</p>
+                    <p>Sube una imagen física al disco <code>D:/imagenes</code> usando Multer y vincula su ruta relativa
+                        en la base de datos.</p>
                     <strong>Formato: <code>multipart/form-data</code></strong>
                     <table>
-                        <tr><th>Key</th><th>Valor</th></tr>
-                        <tr><td><code>imagen</code></td><td>Archivo físico (.jpg, .png, .webp)</td></tr>
+                        <tr>
+                            <th>Key</th>
+                            <th>Valor</th>
+                        </tr>
+                        <tr>
+                            <td><code>imagen</code></td>
+                            <td>Archivo físico (.jpg, .png, .webp)</td>
+                        </tr>
                     </table>
                 </div>
 
@@ -131,177 +207,195 @@
             </div>
         </section>
 
-    <main id="app">
-        <!-- Section Auth / Usuarios -->
-        <section id="auth" class="section active">
-            <h2>Gestión de Usuarios y Autenticación</h2>
-            
-            <div class="card form-card">
-                <h3>Crear Usuario (Registro)</h3>
-                <form id="form-usuario">
-                    <input type="text" id="u-dni" placeholder="DNI" required>
-                    <input type="text" id="u-nombres" placeholder="Nombres" required>
-                    <input type="text" id="u-ape-pat" placeholder="Apellido Paterno" required>
-                    <input type="text" id="u-ape-mat" placeholder="Apellido Materno">
-                    <input type="text" id="u-celular" placeholder="Celular">
-                    <input type="email" id="u-email" placeholder="Correo Electrónico" required>
-                    <input type="password" id="u-passw" placeholder="Contraseña" required>
-                    <select id="u-rol" required>
-                        <option value="cliente">Cliente</option>
-                        <option value="admin">Admin</option>
-                    </select>
-                    <button type="submit">Registrar Usuario</button>
-                </form>
-            </div>
+        <main id="app">
+            <!-- Section Auth / Usuarios -->
+            <section id="auth" class="section active">
+                <h2>Gestión de Usuarios y Autenticación</h2>
 
-            <div class="card form-card">
-                <h3>Iniciar Sesión (Login)</h3>
-                <form id="form-login">
-                    <input type="email" id="l-email" placeholder="Correo Electrónico" required>
-                    <input type="password" id="l-passw" placeholder="Contraseña" required>
-                    <button type="submit">Iniciar Sesión</button>
-                </form>
-                <div id="login-result" style="margin-top: 10px; font-weight: bold; color: green;"></div>
-            </div>
-        </section>
-
-        <!-- Section Anuncios -->
-        <section id="anuncios" class="section">
-            <h2>Gestión de Anuncios Generales</h2>
-            
-            <div class="card form-card">
-                <h3>Crear Anuncio</h3>
-                <form id="form-anuncio">
-                    <div class="grid-2">
-                        <input type="text" id="a-titulo" placeholder="Título" required>
-                        <input type="text" id="a-telefono" placeholder="Teléfono">
-                    </div>
-                    <textarea id="a-descripcion" placeholder="Descripción" required></textarea>
-                    <div class="grid-2">
-                        <input type="number" step="any" id="a-latitud" placeholder="Latitud (-12.04)">
-                        <input type="number" step="any" id="a-longitud" placeholder="Longitud (-77.02)">
-                        <input type="number" id="a-usuario" placeholder="ID Usuario" required>
-                        <input type="number" id="a-categoria" placeholder="ID Categoría" required>
-                    </div>
-                    <button type="submit">Crear Anuncio Base</button>
-                </form>
-            </div>
-
-            <div class="card">
-                <h3>Lista de Anuncios <button onclick="loadAnuncios()" class="refresh-btn">Recargar</button></h3>
-                <div id="list-anuncios" class="list"></div>
-            </div>
-        </section>
-
-        <!-- Section Vehiculos -->
-        <section id="vehiculos" class="section">
-            <h2>Gestión de Vehículos</h2>
-            
-            <div class="card form-card">
-                <h3>Crear Vehículo</h3>
-                <form id="form-vehiculo">
-                    <h4>1. Datos del Anuncio Base</h4>
-                    <div class="grid-2">
-                        <input type="text" id="v-titulo" placeholder="Título del anuncio" required>
-                        <input type="text" id="v-telefono" placeholder="Teléfono contacto">
-                    </div>
-                    <textarea id="v-descripcion" placeholder="Descripción atractiva..." required></textarea>
-                    <div class="grid-2">
-                        <input type="number" step="any" id="v-latitud" placeholder="Latitud (-12.043)">
-                        <input type="number" step="any" id="v-longitud" placeholder="Longitud (-77.028)">
-                        <input type="number" id="v-usuario" placeholder="Tu ID de Usuario" required>
-                        <input type="number" id="v-categoria" placeholder="ID Cat. Vehículos" required>
-                    </div>
-                    
-                    <h4>2. Especificaciones Técnicas</h4>
-                    <div class="grid-3">
-                        <input type="number" step="0.01" id="v-precio" placeholder="Precio">
-                        <input type="text" id="v-marca" placeholder="Marca">
-                        <input type="text" id="v-modelo" placeholder="Modelo">
-                        <input type="number" id="v-anio" placeholder="Año">
-                        <input type="text" id="v-categoria-vehiculo" placeholder="Categoría (SUV, Sedan, etc)">
-                        <input type="text" id="v-combustible" placeholder="Combustible">
-                        <input type="number" id="v-puertas" placeholder="Puertas">
-                        <input type="text" id="v-traccion" placeholder="Tracción">
-                        <input type="text" id="v-color" placeholder="Color">
-                        <input type="text" id="v-cilindrada" placeholder="Cilindrada">
-                        <input type="number" id="v-kilometraje" placeholder="Kilometraje">
-                        <input type="text" id="v-estado" placeholder="Estado (Nuevo, Usado)">
-                    </div>
-
-                    <h4>3. Equipamiento Adicional</h4>
-                    <div class="grid-3">
-                        <label><input type="checkbox" id="v-retrovisores"> Retrovisores Eléctricos</label>
-                        <label><input type="checkbox" id="v-neblineros"> Neblineros</label>
-                        <label><input type="checkbox" id="v-aire"> Aire Acondicionado</label>
-                        <label><input type="checkbox" id="v-full-equipo"> Full Equipo</label>
-                        <label><input type="checkbox" id="v-parlantes"> Parlantes</label>
-                        <label><input type="checkbox" id="v-radio-cd"> Radio CD</label>
-                        <label><input type="checkbox" id="v-radio-mp3"> Radio MP3</label>
-                        <label><input type="checkbox" id="v-aros"> Aros</label>
-                        <label><input type="checkbox" id="v-aros-aleacion"> Aros Aleación</label>
-                        <label><input type="checkbox" id="v-parrilla"> Parrilla</label>
-                        <label><input type="checkbox" id="v-luces-alogenas"> Luces Alógenas</label>
-                    </div>
-
-                    <h4>4. Seguridad y Extras</h4>
-                    <div class="grid-3">
-                        <label><input type="checkbox" id="v-gps"> Localizador GPS</label>
-                        <label><input type="checkbox" id="v-airbag"> Airbag</label>
-                        <label><input type="checkbox" id="v-laminas"> Láminas Seguridad</label>
-                        <label><input type="checkbox" id="v-blindado"> Blindado</label>
-                        <label><input type="checkbox" id="v-faros-traseros"> Faros Antiniebla Tras.</label>
-                        <label><input type="checkbox" id="v-faros-delanteros"> Faros Antiniebla Del.</label>
-                        <label><input type="checkbox" id="v-inmovilizador"> Inmovilizador Motor</label>
-                        <label><input type="checkbox" id="v-repartidor-frenado"> Repartidor Elect. Frenado</label>
-                        <label><input type="checkbox" id="v-frenos-abs"> Frenos ABS</label>
-                        <label><input type="checkbox" id="v-alarma"> Alarma</label>
-                        <label><input type="checkbox" id="v-sunroof"> Sunroof</label>
-                        <label><input type="checkbox" id="v-asientos-cuero"> Asientos Cuero</label>
-                        <label><input type="checkbox" id="v-climatizador"> Climatizador</label>
-                    </div>
-                    
-                    <button type="submit" style="margin-top: 15px;">Crear Vehículo</button>
-                </form>
-            </div>
-
-            <div class="card">
-                <h3>Lista de Vehículos <button onclick="loadVehiculos()" class="refresh-btn">Recargar</button></h3>
-                <div id="list-vehiculos" class="list"></div>
-            </div>
-        </section>
-
-        <!-- Section Imágenes -->
-        <section id="imagenes" class="section">
-            <h2>Gestión de Imágenes</h2>
-            
-            <div class="card form-card">
-                <h3>Subir Imagen a un Anuncio</h3>
-                <form id="form-imagen-upload">
-                    <input type="number" id="img-id-anuncio" placeholder="ID del Anuncio" required>
-                    <input type="file" id="img-file" accept="image/*" required>
-                    <button type="submit">Subir Imagen</button>
-                </form>
-                <div id="upload-result" style="margin-top: 10px; font-weight: bold; color: green;"></div>
-            </div>
-
-            <div class="card form-card">
-                <h3>Ver Imágenes de un Anuncio</h3>
-                <form id="form-imagen-view">
-                    <input type="number" id="view-id-anuncio" placeholder="ID del Anuncio" required>
-                    <button type="submit">Cargar Imágenes</button>
-                </form>
-            </div>
-
-            <div class="card">
-                <h3>Galería</h3>
-                <div id="gallery" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px;">
-                    <p style="grid-column: 1 / -1;">Busca un ID de anuncio para ver sus imágenes.</p>
+                <div class="card form-card">
+                    <h3>Crear Usuario (Registro)</h3>
+                    <form id="form-usuario">
+                        <input type="text" id="u-dni" placeholder="DNI" required>
+                        <input type="text" id="u-nombres" placeholder="Nombres" required>
+                        <input type="text" id="u-ape-pat" placeholder="Apellido Paterno" required>
+                        <input type="text" id="u-ape-mat" placeholder="Apellido Materno">
+                        <input type="text" id="u-celular" placeholder="Celular">
+                        <input type="email" id="u-email" placeholder="Correo Electrónico" required>
+                        <input type="password" id="u-passw" placeholder="Contraseña" required>
+                        <select id="u-rol" required>
+                            <option value="cliente">Cliente</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                        <button type="submit">Registrar Usuario</button>
+                    </form>
                 </div>
-            </div>
-        </section>
-    </main>
 
-    <script src="script.js"></script>
+                <div class="card form-card">
+                    <h3>Iniciar Sesión (Login)</h3>
+                    <form id="form-login">
+                        <input type="email" id="l-email" placeholder="Correo Electrónico" required>
+                        <input type="password" id="l-passw" placeholder="Contraseña" required>
+                        <button type="submit">Iniciar Sesión</button>
+                    </form>
+                    <div id="login-result" style="margin-top: 15px; font-weight: bold;"></div>
+                </div>
+
+                <div class="card form-card">
+                    <h3>Buscar Usuario</h3>
+                    <form id="form-user-search">
+                        <div style="display: flex; gap: 10px;">
+                            <input type="number" id="search-user-id" placeholder="ID del Usuario" required style="flex: 1;">
+                            <button type="submit" style="margin-top: 0;">Buscar</button>
+                        </div>
+                    </form>
+                    <div id="user-search-result" style="margin-top: 15px;"></div>
+                </div>
+
+                <div class="card">
+                    <h3>Todos los Usuarios <button onclick="loadUsuarios()" class="refresh-btn">Cargar Usuarios</button></h3>
+                    <div id="list-usuarios" class="list"></div>
+                </div>
+            </section>
+
+            <!-- Section Anuncios -->
+            <section id="anuncios" class="section">
+                <h2>Gestión de Anuncios Generales</h2>
+
+                <div class="card form-card">
+                    <h3>Crear Anuncio</h3>
+                    <form id="form-anuncio">
+                        <div class="grid-2">
+                            <input type="text" id="a-titulo" placeholder="Título" required>
+                            <input type="text" id="a-telefono" placeholder="Teléfono">
+                        </div>
+                        <textarea id="a-descripcion" placeholder="Descripción" required></textarea>
+                        <div class="grid-2">
+                            <input type="number" step="any" id="a-latitud" placeholder="Latitud (-12.04)">
+                            <input type="number" step="any" id="a-longitud" placeholder="Longitud (-77.02)">
+                            <input type="number" id="a-usuario" placeholder="ID Usuario" required>
+                            <input type="number" id="a-categoria" placeholder="ID Categoría" required>
+                        </div>
+                        <button type="submit">Crear Anuncio Base</button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h3>Lista de Anuncios <button onclick="loadAnuncios()" class="refresh-btn">Recargar</button></h3>
+                    <div id="list-anuncios" class="list"></div>
+                </div>
+            </section>
+
+            <!-- Section Vehiculos -->
+            <section id="vehiculos" class="section">
+                <h2>Gestión de Vehículos</h2>
+
+                <div class="card form-card">
+                    <h3>Crear Vehículo</h3>
+                    <form id="form-vehiculo">
+                        <h4>1. Datos del Anuncio Base</h4>
+                        <div class="grid-2">
+                            <input type="text" id="v-titulo" placeholder="Título del anuncio" required>
+                            <input type="text" id="v-telefono" placeholder="Teléfono contacto">
+                        </div>
+                        <textarea id="v-descripcion" placeholder="Descripción atractiva..." required></textarea>
+                        <div class="grid-2">
+                            <input type="number" step="any" id="v-latitud" placeholder="Latitud (-12.043)">
+                            <input type="number" step="any" id="v-longitud" placeholder="Longitud (-77.028)">
+                            <input type="number" id="v-usuario" placeholder="Tu ID de Usuario" required>
+                            <input type="number" id="v-categoria" placeholder="ID Cat. Vehículos" required>
+                        </div>
+
+                        <h4>2. Especificaciones Técnicas</h4>
+                        <div class="grid-2">
+                            <input type="number" step="0.01" id="v-precio" placeholder="Precio">
+                            <input type="text" id="v-marca" placeholder="Marca">
+                            <input type="text" id="v-modelo" placeholder="Modelo">
+                            <input type="number" id="v-anio" placeholder="Año">
+                            <input type="text" id="v-categoria-vehiculo" placeholder="Categoría (SUV, Sedan, etc)">
+                            <input type="text" id="v-combustible" placeholder="Combustible">
+                            <input type="number" id="v-puertas" placeholder="Puertas">
+                            <input type="text" id="v-traccion" placeholder="Tracción">
+                            <input type="text" id="v-color" placeholder="Color">
+                            <input type="text" id="v-cilindrada" placeholder="Cilindrada">
+                            <input type="number" id="v-kilometraje" placeholder="Kilometraje">
+                            <input type="text" id="v-estado" placeholder="Estado (Nuevo, Usado)">
+                        </div>
+
+                        <h4>3. Equipamiento Adicional</h4>
+                        <div class="grid-3">
+                            <label><input type="checkbox" id="v-retrovisores"> Retrovisores Eléctricos</label>
+                            <label><input type="checkbox" id="v-neblineros"> Neblineros</label>
+                            <label><input type="checkbox" id="v-aire"> Aire Acondicionado</label>
+                            <label><input type="checkbox" id="v-full-equipo"> Full Equipo</label>
+                            <label><input type="checkbox" id="v-parlantes"> Parlantes</label>
+                            <label><input type="checkbox" id="v-radio-cd"> Radio CD</label>
+                            <label><input type="checkbox" id="v-radio-mp3"> Radio MP3</label>
+                            <label><input type="checkbox" id="v-aros"> Aros</label>
+                            <label><input type="checkbox" id="v-aros-aleacion"> Aros Aleación</label>
+                            <label><input type="checkbox" id="v-parrilla"> Parrilla</label>
+                            <label><input type="checkbox" id="v-luces-alogenas"> Luces Alógenas</label>
+                        </div>
+
+                        <h4>4. Seguridad y Extras</h4>
+                        <div class="grid-3">
+                            <label><input type="checkbox" id="v-gps"> Localizador GPS</label>
+                            <label><input type="checkbox" id="v-airbag"> Airbag</label>
+                            <label><input type="checkbox" id="v-laminas"> Láminas Seguridad</label>
+                            <label><input type="checkbox" id="v-blindado"> Blindado</label>
+                            <label><input type="checkbox" id="v-faros-traseros"> Faros Antiniebla Tras.</label>
+                            <label><input type="checkbox" id="v-faros-delanteros"> Faros Antiniebla Del.</label>
+                            <label><input type="checkbox" id="v-inmovilizador"> Inmovilizador Motor</label>
+                            <label><input type="checkbox" id="v-repartidor-frenado"> Repartidor Elect. Frenado</label>
+                            <label><input type="checkbox" id="v-frenos-abs"> Frenos ABS</label>
+                            <label><input type="checkbox" id="v-alarma"> Alarma</label>
+                            <label><input type="checkbox" id="v-sunroof"> Sunroof</label>
+                            <label><input type="checkbox" id="v-asientos-cuero"> Asientos Cuero</label>
+                            <label><input type="checkbox" id="v-climatizador"> Climatizador</label>
+                        </div>
+
+                        <button type="submit" style="margin-top: 15px;">Crear Vehículo</button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h3>Lista de Vehículos <button onclick="loadVehiculos()" class="refresh-btn">Recargar</button></h3>
+                    <div id="list-vehiculos" class="list"></div>
+                </div>
+            </section>
+
+            <!-- Section Imágenes -->
+            <section id="imagenes" class="section">
+                <h2>Gestión de Imágenes</h2>
+
+                <div class="card form-card">
+                    <h3>Subir Imagen a un Anuncio</h3>
+                    <form id="form-imagen-upload">
+                        <input type="number" id="img-id-anuncio" placeholder="ID del Anuncio" required>
+                        <input type="file" id="img-file" accept="image/*" required>
+                        <button type="submit">Subir Imagen</button>
+                    </form>
+                    <div id="upload-result" style="margin-top: 10px; font-weight: bold; color: green;"></div>
+                </div>
+
+                <div class="card form-card">
+                    <h3>Ver Imágenes de un Anuncio</h3>
+                    <form id="form-imagen-view">
+                        <input type="number" id="view-id-anuncio" placeholder="ID del Anuncio" required>
+                        <button type="submit">Cargar Imágenes</button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h3>Galería</h3>
+                    <div id="gallery"
+                        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px;">
+                        <p style="grid-column: 1 / -1;">Busca un ID de anuncio para ver sus imágenes.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <script src="script.js"></script>
 </body>
+
 </html>

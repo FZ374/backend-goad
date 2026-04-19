@@ -15,4 +15,11 @@ const createUsuario = async (req, res) => {
   res.json(user);
 };
 
-module.exports = { getUsuarios, createUsuario };
+const buscarUsuarioById = async (req, res) => {
+  const { id_usuario } = req.params;
+  const data = await usuarioService.buscarUsuarioById(id_usuario);
+  if (!data) return res.status(404).json({ msg: 'Usuario no encontrado' });
+  res.json(data);
+};
+
+module.exports = { getUsuarios, createUsuario, buscarUsuarioById };

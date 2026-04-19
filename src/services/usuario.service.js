@@ -17,4 +17,9 @@ const createUsuario = async (data) => {
   return res.rows[0];
 };
 
-module.exports = { getUsuarios, createUsuario };
+const buscarUsuarioById = async (id_usuario) => {
+  const res = await pool.query('SELECT * FROM usuario WHERE id_usuario = $1', [id_usuario]);
+  return res.rows[0];
+};
+
+module.exports = { getUsuarios, createUsuario, buscarUsuarioById };

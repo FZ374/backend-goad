@@ -6,11 +6,12 @@ function showSection(sectionId, btn) {
     document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
     // Quitar active-tab de todos los botones
     document.querySelectorAll('#main-nav button').forEach(b => b.classList.remove('active-tab'));
-    
+
     // Mostrar sección actual y activar botón
     document.getElementById(sectionId).classList.add('active');
     if (btn) btn.classList.add('active-tab');
 
+    if (sectionId === 'auth') loadUsuarios();
     if (sectionId === 'anuncios') loadAnuncios();
     if (sectionId === 'vehiculos') loadVehiculos();
 }
@@ -65,20 +66,85 @@ document.getElementById('form-login').addEventListener('submit', async (e) => {
         });
 
         const data = await res.json();
-        
+
         if (res.ok) {
-            document.getElementById('login-result').innerText = `✅ Login Exitoso! Hola ${data.user.nombres}`;
-            // Optional: guardamos token en localstorage para pruebas
             localStorage.setItem('token', data.token);
+            document.getElementById('login-result').innerHTML = `
+                <div style="color: #4ade80; margin-bottom: 10px;">✅ Login Exitoso! Hola ${data.user.nombres}</div>
+                <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 5px; border: 1px solid #38bdf8;">
+                    <span style="color: #cbd5e1; font-size: 0.85em; display: block; margin-bottom: 5px;">Tu Token JWT (cópialo si lo necesitas):</span>
+                    <code style="word-break: break-all; color: #38bdf8; font-size: 0.8em;">${data.token}</code>
+                </div>
+            `;
             e.target.reset();
         } else {
-            document.getElementById('login-result').innerText = '';
-            alert('Error al hacer login: ' + (data.msg || JSON.stringify(data)));
+            document.getElementById('login-result').innerHTML = `<span style="color: red;">❌ Error: ${data.msg || JSON.stringify(data)}</span>`;
         }
     } catch (error) {
-        alert('Error: ' + error.message);
+        document.getElementById('login-result').innerHTML = `<span style="color: red;">❌ Error: ${error.message}</span>`;
     }
 });
+
+// Buscar un usuario
+document.getElementById('form-user-search').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const id = document.getElementById('search-user-id').value;
+    const resultDiv = document.getElementById('user-search-result');
+
+    resultDiv.innerHTML = '<span style="color: orange;">Buscando...</span>';
+
+    try {
+        const res = await fetch(`${API_URL}/usuarios/${id}`);
+        const data = await res.json();
+
+        if (res.ok) {
+            resultDiv.innerHTML = `
+                <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
+                    <strong style="color: #38bdf8; font-size: 1.2em;">${data.nombres} ${data.apellido_paterno}</strong><br>
+                    <span style="color: #94a3b8;">Email:</span> ${data.email} <br>
+                    <span style="color: #94a3b8;">DNI:</span> ${data.dni} <br>
+                    <span style="color: #94a3b8;">Rol:</span> <span class="method-badge method-post">${data.rol}</span>
+                </div>
+            `;
+        } else {
+            resultDiv.innerHTML = `<span style="color: red;">❌ ${data.msg || 'Usuario no encontrado'}</span>`;
+        }
+    } catch (error) {
+        resultDiv.innerHTML = `<span style="color: red;">❌ Error: ${error.message}</span>`;
+    }
+});
+
+// Cargar todos los usuarios
+async function loadUsuarios() {
+    const list = document.getElementById('list-usuarios');
+    list.innerHTML = 'Cargando...';
+
+    try {
+        const res = await fetch(`${API_URL}/usuarios`);
+        const data = await res.json();
+        list.innerHTML = '';
+
+        if (data.length === 0) {
+            list.innerHTML = 'No hay usuarios.';
+            return;
+        }
+
+        data.forEach(u => {
+            const el = document.createElement('div');
+            el.className = 'item';
+            el.innerHTML = `
+                <div class="item-info">
+                    <strong>${u.nombres} ${u.apellido_paterno} (ID: ${u.id})</strong>
+                    <p>${u.email} | DNI: ${u.dni}</p>
+                    <small>Rol: ${u.rol}</small>
+                </div>
+            `;
+            list.appendChild(el);
+        });
+    } catch (error) {
+        list.innerHTML = 'Error al cargar usuarios: ' + error.message;
+    }
+}
 
 // =======================
 // ANUNCIOS CRUD
@@ -87,7 +153,7 @@ async function loadAnuncios() {
     try {
         const res = await fetch(`${API_URL}/anuncios`);
         const data = await res.json();
-        
+
         const container = document.getElementById('list-anuncios');
         container.innerHTML = '';
 
@@ -116,7 +182,7 @@ async function loadAnuncios() {
 
 document.getElementById('form-anuncio').addEventListener('submit', async (e) => {
     e.preventDefault();
-    
+
     const body = {
         titulo: document.getElementById('a-titulo').value,
         descripcion: document.getElementById('a-descripcion').value,
@@ -164,7 +230,7 @@ async function loadVehiculos() {
     try {
         const res = await fetch(`${API_URL}/vehiculos`);
         const data = await res.json();
-        
+
         const container = document.getElementById('list-vehiculos');
         container.innerHTML = '';
 
@@ -194,7 +260,7 @@ async function loadVehiculos() {
 
 document.getElementById('form-vehiculo').addEventListener('submit', async (e) => {
     e.preventDefault();
-    
+
     const body = {
         // Datos base (anuncio)
         titulo: document.getElementById('v-titulo').value,
@@ -204,7 +270,7 @@ document.getElementById('form-vehiculo').addEventListener('submit', async (e) =>
         numero_telefono: document.getElementById('v-telefono').value,
         id_usuario: document.getElementById('v-usuario').value,
         id_categoria: document.getElementById('v-categoria').value,
-        
+
         // Datos específicos (vehículo) principales
         precio: document.getElementById('v-precio').value || null,
         marca: document.getElementById('v-marca').value,
@@ -285,11 +351,11 @@ async function deleteVehiculo(id) {
 // =======================
 document.getElementById('form-imagen-upload').addEventListener('submit', async (e) => {
     e.preventDefault();
-    
+
     const idAnuncio = document.getElementById('img-id-anuncio').value;
     const fileInput = document.getElementById('img-file');
     const resultDiv = document.getElementById('upload-result');
-    
+
     if (fileInput.files.length === 0) return;
 
     const formData = new FormData();
@@ -322,16 +388,16 @@ document.getElementById('form-imagen-upload').addEventListener('submit', async (
 
 document.getElementById('form-imagen-view').addEventListener('submit', async (e) => {
     e.preventDefault();
-    
+
     const idAnuncio = document.getElementById('view-id-anuncio').value;
     const gallery = document.getElementById('gallery');
-    
+
     gallery.innerHTML = '<p>Cargando...</p>';
 
     try {
         const res = await fetch(`${API_URL}/anuncios/${idAnuncio}/imagenes`);
         if (!res.ok) throw new Error('Error en respuesta de la API');
-        
+
         const data = await res.json();
         gallery.innerHTML = '';
 
